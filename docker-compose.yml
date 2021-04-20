@@ -14,7 +14,7 @@ services:
         ports:
             - "${MONGO_EXPRESS_PORT}:8081"
         volumes:
-            - ./mongo/mongo-express/docker-entrypoint.sh:/docker-entrypoint.sh
+            - ./mongo/${MONGO_VOLUME}:/var/lib/mongo/data/mongodata
         env_file:
             - .env
         environment:
