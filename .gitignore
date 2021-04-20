@@ -115,5 +115,3 @@ postgres/pgdata
 # key
 .key/
 *.pem
-
-mongo

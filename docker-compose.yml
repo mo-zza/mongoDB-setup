@@ -5,7 +5,23 @@ services:
         ports:
             - "${MONGO_PORT}:27017"
         volumes:
-            - ./mongodb:/data/db
+            - ./mongo:/data/db
         container_name: "docker-mongodb"
         env_file:
             - .env
+    mongo-express:
+        image: mongo-express
+        ports:
+            - "${MONGO_EXPRESS_PORT}:8081"
+        volumes:
+            - ./mongo/mongo-express/docker-entrypoint.sh:/docker-entrypoint.sh
+        env_file:
+            - .env
+        environment:
+            ME_CONFIG_MONGODB_SERVER: mongodb
+            ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+            ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+            ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
+            ME_CONFIG_BASICAUTH_PASSWORD: ${c}
+        depends_on:
+            - mongodb
