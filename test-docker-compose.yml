@@ -1,0 +1,44 @@
+version: '3.1'
+
+services:
+  mongodb-primary:
+    image: mongo:5
+    ports:
+      - "${MONGO_PRIMARY_PORT:-27017}:27017"
+    volumes:
+      - ./mongo:/data/db
+    container_name: "mongodb-primary"
+    restart: always
+    command: mongod --replSet rs0 --bind_ip localhost,mongodb-primary
+    networks:
+      - mongocluster
+  mongodb-secondary-read:
+    image: mongo:5
+    ports:
+      - "${MONGO_SECONDARY_READ_PORT:-27018}:27017"
+    volumes:
+      - ./mongo-secondary-read:/data/db
+    container_name: "mongodb-secondary-read"
+    restart: always
+    command: mongod --replSet rs0 --bind_ip localhost,mongodb-secondary-read
+    networks:
+      - mongocluster
+    depends_on:
+      - mongodb-primary
+  mongodb-secondary-rw:
+    image: mongo:5
+    ports:
+      - "${MONGO_SECONDARY_RW_PORT:-27019}:27017"
+    volumes:
+      - ./mongo-secondary-rw:/data/db
+    container_name: "mongodb-secondary-rw"
+    restart: always
+    command: mongod --replSet rs0 --bind_ip localhost,mongodb-secondary-rw
+    networks:
+      - mongocluster
+    depends_on:
+      - mongodb-primary
+
+networks:
+  mongocluster:
+    driver: bridge

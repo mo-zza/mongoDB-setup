@@ -1,23 +1,23 @@
 #!/bin/bash
 
-# check openssl command is installed
-if ! command -v openssl &> /dev/null
-then
-    echo "openssl could not be found"
-    exit
-fi
-
-# create mongodb ssl key
-## Check if the key file already exists
-if [ -f ${HOME}/.ssh/mongodb.key ]; then
-    echo "MongoDB SSL key already exists."
-else
-    echo "Creating MongoDB SSL key..."
-    sudo openssl rand -base64 756 > ${HOME}/.ssh/mongodb.key
-    sudo chmod 400 ${HOME}/.ssh/mongodb.key
-    cat ${HOME}/.ssh/mongodb.key
-    echo "MongoDB SSL key created successfully."
-fi
+## check openssl command is installed
+#if ! command -v openssl &> /dev/null
+#then
+#    echo "openssl could not be found"
+#    exit
+#fi
+#
+## create mongodb ssl key
+### Check if the key file already exists
+#if [ -f ${HOME}/.ssh/mongodb.key ]; then
+#    echo "MongoDB SSL key already exists."
+#else
+#    echo "Creating MongoDB SSL key..."
+#    sudo openssl rand -base64 756 > ${HOME}/.ssh/mongodb.key
+#    sudo chmod 400 ${HOME}/.ssh/mongodb.key
+#    cat ${HOME}/.ssh/mongodb.key
+#    echo "MongoDB SSL key created successfully."
+#fi
 
 # write environment variables
 ## Check if the environment variables already exist
@@ -64,7 +64,8 @@ done
 echo "Initializing replica set..."
 sleep 5s
 source .env
-docker exec mongodb-primary mongosh --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin --eval "
+#docker exec mongodb-primary mongosh --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin --eval "
+docker exec mongodb-primary mongosh --eval "
 try {
   rs.initiate({
     _id: 'rs0',
@@ -85,6 +86,6 @@ try {
 "
 
 # Check the status of the Replica Set
-docker exec mongodb-primary mongosh --username ${MONGO_INITDB_ROOT_USERNAME} --password ${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin --eval "
+docker exec mongodb-primary mongosh --eval "
 rs.status()
 "
