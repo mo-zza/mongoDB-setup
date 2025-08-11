@@ -9,13 +9,13 @@ fi
 
 # create mongodb ssl key
 ## Check if the key file already exists
-if [ -f ~/.ssh/mongodb.key ]; then
+if [ -f ./ssh/mongodb.key ]; then
     echo "MongoDB SSL key already exists."
 else
     echo "Creating MongoDB SSL key..."
-    sudo openssl rand -base64 756 > ~/.ssh/mongodb.key
-    sudo chmod 400 ~/.ssh/mongodb.key
-    cat ~/.ssh/mongodb.key
+    sudo openssl rand -base64 756 > ./ssh/mongodb.key
+    sudo chmod 400 ./ssh/mongodb.key
+    cat ./ssh/mongodb.key
     echo "MongoDB SSL key created successfully."
 fi
 

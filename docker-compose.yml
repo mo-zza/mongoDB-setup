@@ -7,7 +7,7 @@ services:
       - "${MONGO_PRIMARY_PORT:-27017}:27017"
     volumes:
       - ./mongo:/data/db
-      - ~/.ssh/mongodb.key:/etc/mongodb.key
+      - ./ssh/mongodb.key:/etc/mongodb.key
     container_name: "mongodb-primary"
     restart: always
     command: mongod --replSet rs0 --keyFile /etc/mongodb.key --bind_ip localhost,mongodb-primary
@@ -21,7 +21,7 @@ services:
       - "${MONGO_SECONDARY_READ_PORT:-27018}:27017"
     volumes:
       - ./mongo-secondary-read:/data/db
-      - ~/.ssh/mongodb.key:/etc/mongodb.key
+      - ./ssh/mongodb.key:/etc/mongodb.key
     container_name: "mongodb-secondary-read"
     restart: always
     command: mongod --replSet rs0 --keyFile /etc/mongodb.key --bind_ip localhost,mongodb-secondary-read
@@ -37,7 +37,7 @@ services:
       - "${MONGO_SECONDARY_RW_PORT:-27019}:27017"
     volumes:
       - ./mongo-secondary-rw:/data/db
-      - ~/.ssh/mongodb.key:/etc/mongodb.key
+      - ./ssh/mongodb.key:/etc/mongodb.key
     container_name: "mongodb-secondary-rw"
     restart: always
     command: mongod --replSet rs0 --keyFile /etc/mongodb.key --bind_ip localhost,mongodb-secondary-rw
