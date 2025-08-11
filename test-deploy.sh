@@ -36,7 +36,7 @@ else
 fi
 
 # run mongodb with ssl
-docker compose up -d
+docker compose -f test-docker-compose.yml up -d
 
 # check if mongodb is running
 docker ps | grep mongodb
