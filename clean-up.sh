@@ -19,6 +19,10 @@ fi
 echo "Stopping MongoDB..."
 docker compose down
 
+# Remove MongoDB Network
+echo "Removing MongoDB Network..."
+docker network rm mongocluster
+
 # Remove MongoDB data
 echo "Removing MongoDB data..."
 sudo rm -rf ./mongo ./mongo-secondary-read ./mongo-secondary-rw
