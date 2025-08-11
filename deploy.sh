@@ -36,7 +36,7 @@ else
 fi
 
 # run mongodb with ssl
-sudo docker compose up -d
+docker compose up -d
 
 # check if mongodb is running
 docker ps | grep mongodb
