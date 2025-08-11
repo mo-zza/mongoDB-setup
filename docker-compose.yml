@@ -1,28 +1,53 @@
-version: '3'
+version: '3.1'
+
 services:
-    mongodb:
-        image: mongo
-        ports:
-            - "${MONGO_PORT}:27017"
-        volumes:
-            - ./mongo:/data/db
-        container_name: "docker-mongodb"
-        env_file:
-            - .env
-    mongo-express:
-        image: mongo-express
-        ports:
-            - "${MONGO_EXPRESS_PORT}:8081"
-        volumes:
-            - ./mongo/${MONGO_VOLUME}:/var/lib/mongo/data/mongodata
-        env_file:
-            - .env
-        environment:
-            ME_CONFIG_MONGODB_SERVER: ${MONGO_HOST}
-            ME_CONFIG_MONGODB_PORT: ${MONGO_PORT}
-            ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-            ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-            ME_CONFIG_BASICAUTH_USERNAME: ${ME_CONFIG_BASICAUTH_USERNAME}
-            ME_CONFIG_BASICAUTH_PASSWORD: ${ME_CONFIG_BASICAUTH_PASSWORD}
-        depends_on:
-            - mongodb
+  mongodb-primary:
+    image: mongo:5
+    ports:
+      - "${MONGO_PRIMARY_PORT:-27017}:27017"
+    volumes:
+      - ./mongo:/data/db
+      - ~/.ssh/mongodb.key:/etc/mongodb.key
+    container_name: "mongodb-primary"
+    restart: always
+    command: mongod --replSet rs0 --keyFile /etc/mongodb.key --bind_ip localhost,mongodb-primary
+    networks:
+      - mongocluster
+    env_file:
+      - .env
+  mongodb-secondary-read:
+    image: mongo:5
+    ports:
+      - "${MONGO_SECONDARY_READ_PORT:-27018}:27017"
+    volumes:
+      - ./mongo-secondary-read:/data/db
+      - ~/.ssh/mongodb.key:/etc/mongodb.key
+    container_name: "mongodb-secondary-read"
+    restart: always
+    command: mongod --replSet rs0 --keyFile /etc/mongodb.key --bind_ip localhost,mongodb-secondary-read
+    networks:
+      - mongocluster
+    depends_on:
+      - mongodb-primary
+    env_file:
+      - .env
+  mongodb-secondary-rw:
+    image: mongo:5
+    ports:
+      - "${MONGO_SECONDARY_RW_PORT:-27019}:27017"
+    volumes:
+      - ./mongo-secondary-rw:/data/db
+      - ~/.ssh/mongodb.key:/etc/mongodb.key
+    container_name: "mongodb-secondary-rw"
+    restart: always
+    command: mongod --replSet rs0 --keyFile /etc/mongodb.key --bind_ip localhost,mongodb-secondary-rw
+    networks:
+      - mongocluster
+    depends_on:
+      - mongodb-primary
+    env_file:
+      - .env
+
+networks:
+  mongocluster:
+    driver: bridge

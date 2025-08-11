@@ -115,3 +115,8 @@ postgres/pgdata
 # key
 .key/
 *.pem
+
+# data
+mongo*
+
+.idea
