@@ -1,5 +1,0 @@
-{
-  "dependencies": {
-    "winston-mongodb": "^5.0.7"
-  }
-}
