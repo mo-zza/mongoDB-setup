@@ -21,4 +21,4 @@ docker compose down
 
 # Remove MongoDB data
 echo "Removing MongoDB data..."
-rm -rf ./mongo ./mongo-secondary-read ./mongo-secondary-rw
+sudo rm -rf ./mongo ./mongo-secondary-read ./mongo-secondary-rw
